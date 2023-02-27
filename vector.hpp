@@ -6,7 +6,7 @@
 # include <cstddef>
 # include <exception>
 # include <sstream>
-#include <typeinfo>
+# include <typeinfo>
 # include <cmath>
 # include "random_access_iterator.hpp"
 # include "reverse_random_access_iterator.hpp"
@@ -59,6 +59,12 @@ namespace ft {
 			vector(const vector& other) {
 				_alloc = other._alloc;
 				this->insert(this->begin(), other.begin(), other.end());
+			}
+
+			~vector() {
+				this->clear();
+				if (_ptr)
+					_alloc.deallocate(_ptr, _capacity);
 			}
 
 			void clear() {
@@ -227,8 +233,6 @@ namespace ft {
 				}
 				while (first + n != last) 
 					n++;
-				pointer tmp = _alloc.allocate(n);
-				std::copy(first, last, tmp);
 				if (_capacity == 0) {
 					reserve(n);
 					_size = n;
@@ -236,11 +240,14 @@ namespace ft {
       					_alloc.construct(_ptr + i + start, *(first + i));
 					return ;
 				}
+				pointer tmp = _alloc.allocate(n);
+				std::copy(first, last, tmp);
 				while (_capacity < (_size + n)) {
    					reserve(_capacity * 2);
   				}
 				std::copy(&_ptr[start], &_ptr[_size], &_ptr[n]);
 				std::copy(&tmp[0], &tmp[n], &_ptr[start]);
+				_alloc.deallocate(tmp, n);
 				_size += n;
 			}
 
