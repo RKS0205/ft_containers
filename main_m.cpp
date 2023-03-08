@@ -5,25 +5,30 @@
 #include <typeinfo>
 
 int main(void) {
-	ft::map<int,int> test;
-	ft::map<int,int>::iterator it;
+	ft::map<int,int> my_map;
 
-	test.insert(ft::map<int,int>::value_type(2, 2));
-	test.insert(ft::map<int,int>::value_type(3, 3));
-	test.insert(ft::map<int,int>::value_type(4, 4));
-	test.insert(ft::map<int,int>::value_type(5, 5));
-	test.insert(ft::map<int,int>::value_type(1, 1));
-	it = test.begin();
-	std::cout << it->second << std::endl;
+	my_map.insert(ft::map<int,int>::value_type(2, 2));
+	my_map.insert(ft::map<int,int>::value_type(3, 3));
+	my_map.insert(ft::map<int,int>::value_type(4, 4));
+	my_map.insert(ft::map<int,int>::value_type(5, 5));
+	my_map.insert(ft::map<int,int>::value_type(1, 1));
 
-	std::map<int,int> test2;
-	std::map<int,int>::iterator it2;
+	std::map<int,int> original_map;
 
-	test2.insert(std::map<int,int>::value_type(2, 2));
-	test2.insert(std::map<int,int>::value_type(3, 3));
-	test2.insert(std::map<int,int>::value_type(4, 4));
-	test2.insert(std::map<int,int>::value_type(5, 5));
-	test2.insert(std::map<int,int>::value_type(1, 1));
-	it2 = test2.begin();
-	std::cout << it2->second << std::endl;
+	original_map.insert(std::map<int,int>::value_type(2, 2));
+	original_map.insert(std::map<int,int>::value_type(3, 3));
+	original_map.insert(std::map<int,int>::value_type(4, 4));
+	original_map.insert(std::map<int,int>::value_type(5, 5));
+	original_map.insert(std::map<int,int>::value_type(1, 1));
+
+	ft::map<int,int>::reverse_iterator my_it = my_map.rbegin();
+	std::map<int,int>::reverse_iterator original_it = original_map.rbegin();
+
+	std::cout << "MY_MAP | ORIGINAL_MAP\n";
+	while (my_it != my_map.rend() && original_it != original_map.rend()) {
+		std::cout << my_it->second << "      | " << original_it->second << "\n";
+		my_it++;
+		original_it++;
+	}
+
 }

@@ -17,7 +17,57 @@ namespace ft
 			ft::pair<const Key, T>	*value;
 			Node<Key, T>	*left;
 			Node<Key, T>	*right;
+			Node<Key, T>	*nil;
+			Node<Key, T>	*root;
 			int 	color;
+
+			Node<Key, T> *leftMost(Node<Key, T> *node) {
+				while (node->left != node->nil)
+					node = node->left;
+				return (node);
+			}
+
+			Node<Key, T> *rightMost(Node<Key, T> *node) {
+				while (node->right != node->nil)
+					node = node->right;
+				return (node);
+			}
+
+			Node<Key, T> *getRoot(Node<Key, T> *node) {
+				while (node->parent != node->nil)
+					node = node->parent;
+				return (node);
+			}
+
+			Node<Key, T> *nextNode(Node<Key, T> *x) {
+				if (x == x->nil) {
+					return (rightMost(x->root));
+				}
+				if (x->right != x->nil) {
+					return (leftMost(x->right));
+				}
+				Node<Key, T> *y = x->parent;
+				while (y != y->nil && x == y->right) {
+					x = y;
+					y = y->parent;
+				}
+				return (y);
+			}
+
+			Node<Key, T> *previousNode(Node<Key, T> *x) {
+				if (x == x->nil) {
+					return (rightMost(x->root));
+				}
+				if (x->left != x->nil) {
+					return (rightMost(x->left));
+				}
+				Node<Key, T> *y = x->parent;
+				while (y != y->nil && x == y->left) {
+					x = y;
+					y = y->parent;
+				}
+				return (y);
+			}
 	};
 
 	template <class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<ft::pair<const Key, T> > >
@@ -33,7 +83,9 @@ namespace ft
 				_NIL->right = _NIL;
 				_NIL->left = _NIL;
 				_NIL->parent = _NIL;
+				_NIL->nil = _NIL;
 				_NIL->color = BLACK;
+				_NIL->root = _NIL;
 				_NIL->value = _alloc.allocate(1);
 				_alloc.construct(_NIL->value, value_type());
 				_size = 0;
@@ -43,8 +95,8 @@ namespace ft
 			}
 
 			~RB_Tree() {
-				deallocator(_root);
-				freeNode(_NIL);
+				if (_size > 0)
+					deallocator(_root);
 			}
 
 			void deallocator(Node<Key, T> *node) { 
@@ -52,6 +104,7 @@ namespace ft
 					deallocator(node->left);
 					deallocator(node->right);
 					freeNode(node);
+					_size--;
 				}
 			}
 
@@ -60,6 +113,8 @@ namespace ft
 				new_node->right = _NIL;
 				new_node->left = _NIL;
 				new_node->parent = _NIL;
+				new_node->nil = _NIL;
+				new_node->root = _root;
 				new_node->color = BLACK;
 				new_node->value = _alloc.allocate(1);
 				_alloc.construct(new_node->value, value_type(key, value));
@@ -71,7 +126,7 @@ namespace ft
 				delete node;
 			}
 
-			Node<Key, T> *findNode(Key key) {
+			Node<Key, T> *findNode(Key key) const {
 				Node<Key, T> *temp = _root;
 					while (temp != _NIL) {
 						if (!_comp(key, temp->value->first) && !_comp(temp->value->first, key)) {	
@@ -131,6 +186,7 @@ namespace ft
 				if (_root == _NIL) {
 					_size++;
 					_root = node;
+					_NIL->root = _root;
 					return ;
 				}
 				else {
@@ -163,6 +219,7 @@ namespace ft
 					}
 				}
 				fixInsert(node);
+				_NIL->root = _root;
 			}
 
 			void fixInsert(Node<Key, T> *node) {
@@ -329,6 +386,38 @@ namespace ft
 				_size--;
 			}
 
+			Node<Key, T> *lower_bound(const key_type &k) const {
+				Node<Key, T> *x = _root;
+				Node<Key, T> *y = _NIL;
+
+				while (x != _NIL) {
+					if (!_comp(x->value->first, k)) {
+						y = x;
+						x = x->left;
+					}
+					else {
+						x = x->right;
+					}
+				}
+				return (y);
+			}
+
+			Node<Key, T> *upper_bound(const key_type &k) const {
+				Node<Key, T> *x = _root;
+				Node<Key, T> *y = _NIL;
+
+				while (x != _NIL) {
+					if (_comp(k, x->value->first)) {
+						y = x;
+						x = x->left;
+					}
+					else {
+						x = x->right;
+					}
+				}
+				return (y);
+			}
+
 			void printBT(const std::string& prefix, const Node<Key, T> *node, bool isLeft)
 			{
 				if( node != _NIL )
@@ -345,6 +434,26 @@ namespace ft
 
 			Node<Key, T> *getRoot(void) {
 				return (_root);
+			}
+
+			Node<Key, T> *getNil(void) const {
+				return (_NIL);
+			}
+
+			Allocator getAlloc(void) const {
+				return (_alloc);
+			}
+
+			size_t getSize(void) const {
+				return (_size);
+			}
+
+			Compare getComp(void) const {
+				return (_comp);
+			}
+
+			size_t max_size(void) const {
+				return (_alloc.max_size());
 			}
 
 			void printBT(void)

@@ -9,7 +9,7 @@
 # include <typeinfo>
 # include <cmath>
 # include "random_access_iterator.hpp"
-# include "reverse_random_access_iterator.hpp"
+# include "reverse_iterator.hpp"
 # include "type_traits.hpp"
 
 
@@ -26,8 +26,8 @@ namespace ft {
 			typedef typename Allocator::const_pointer const_pointer;
 			typedef ft::random_access_iterator<pointer> iterator;
 			typedef ft::random_access_iterator<pointer> const_iterator;
-			typedef ft::reverse_random_access_iterator<iterator> reverse_iterator;
-  			typedef ft::reverse_random_access_iterator<const_iterator> const_reverse_iterator;
+			typedef ft::reverse_iterator<iterator> reverse_iterator;
+  			typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
 			typedef ptrdiff_t difference_type;
 			typedef size_t size_type;
 

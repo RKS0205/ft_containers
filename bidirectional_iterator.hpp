@@ -11,6 +11,7 @@ namespace ft {
 	class bidirectional_iterator {
 		public:
 			typedef ft::pair<const Key, T> iterator_type;
+			typedef typename iterator_traits<T*>::iterator_category	iterator_category;
 			typedef typename iterator_traits<T*>::value_type value_type;
 			typedef typename iterator_traits<T*>::difference_type difference_type;
 			typedef typename iterator_traits<T*>::pointer pointer;
@@ -40,10 +41,45 @@ namespace ft {
 				return (node->value);
 			}
 
+			bidirectional_iterator& operator++(void) {
+				node = node->nextNode(node);
+				return (*this);
+			}
+
+			bidirectional_iterator operator++(int) {
+				Node<Key, T> *tmp = node;
+				node = node->nextNode(node);
+				return (bidirectional_iterator(tmp));
+			}
+
+			bidirectional_iterator& operator--(void) {
+				node = node->previousNode(node);
+				return (*this);
+			}
+
+			bidirectional_iterator operator--(int) {
+				Node<Key, T> *tmp = node;
+				node = node->previousNode(node);
+				return (bidirectional_iterator(tmp));
+			}
+
 		private:
 			Node<Key, T> *node;
 
 	};
+
+	template <typename Key, typename T>
+	inline bool operator==(const bidirectional_iterator<Key, T>& lhs,
+						const bidirectional_iterator<Key, T>& rhs) {
+		return (lhs.base() == rhs.base());
+	}
+
+	template <typename Key, typename T>
+	inline bool operator!=(const bidirectional_iterator<Key, T>& lhs,
+						const bidirectional_iterator<Key, T>& rhs) {
+		return (lhs.base() != rhs.base());
+	}
+
 }
 
 
