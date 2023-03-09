@@ -11,6 +11,7 @@
 # include "random_access_iterator.hpp"
 # include "reverse_iterator.hpp"
 # include "type_traits.hpp"
+# include "algorithm.hpp"
 
 
 namespace ft {
@@ -284,83 +285,39 @@ namespace ft {
 			pointer _ptr;
 	};
 
-	template< class T, class Alloc >
-	bool operator== ( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
-		if (lhs.size() != rhs.size())
-			return false;
-		typename ft::vector<T>::iterator lIt = lhs.begin(); 
-		typename ft::vector<T>::iterator rIt = rhs.begin();
-		for (; lIt != lhs.end(); lIt++, rIt++){
-			if (*lIt != *rIt || rIt == rhs.end())
-				return false;
-		}
-		return true;
+	template <class T, class Alloc>
+	inline bool operator==(const vector<T, Alloc>& x, const vector<T, Alloc>& y) {
+		return ((x.size() == y.size() && ft::equal(x.begin(), x.end(), y.begin())));
 	}
 
-	template< class T, class Alloc >
-	bool operator!= ( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
-		return (!(lhs == rhs));
+	template <class T, class Alloc>
+	inline bool operator!=(const vector<T, Alloc>& x, const vector<T, Alloc>& y) {
+		return (!(x == y));
 	}
 
-	template< class T, class Alloc >
-	bool operator<( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
-		typename ft::vector<T>::iterator lIt = lhs.begin(); 
-		typename ft::vector<T>::iterator rIt = rhs.begin();
-		for (; lIt != lhs.end(); lIt++, rIt++){
-			if (*lIt > *rIt)
-				return false;
-			else if (*lIt < *rIt)
-				return true;
-		}
-		if (lhs.size() >= rhs.size())
-			return false;
-		return false;
+	template <class T, class Alloc>
+	inline bool operator<(const vector<T, Alloc>& x, const vector<T, Alloc>& y) {
+		return (ft::lexicographical_compare(x.begin(), x.end(), y.begin(), y.end()));
 	}
 
-	template< class T, class Alloc >
-	bool operator<=( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
-		typename ft::vector<T>::iterator lIt = lhs.begin(); 
-		typename ft::vector<T>::iterator rIt = rhs.begin();
-		for (; lIt != lhs.end(); lIt++, rIt++){
-			if (*lIt > *rIt)
-				return false;
-			else if (*lIt < *rIt)
-				return true;
-		}
-		if (lhs.size() > rhs.size())
-			return false;
-		return true;
+	template <class T, class Alloc>
+	inline bool operator<=(const vector<T, Alloc>& x, const vector<T, Alloc>& y) {
+		return (!(y < x));
 	}
 
-	template< class T, class Alloc >
-	bool operator>( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
-		typename ft::vector<T>::iterator lIt = lhs.begin(); 
-		typename ft::vector<T>::iterator rIt = rhs.begin();
-		for (; lIt != lhs.end(); lIt++, rIt++){
-			if (*lIt < *rIt)
-				return false;
-		}
-		if (lhs.size() < rhs.size())
-			return false;
-		return true;
-	}
-	
-	template< class T, class Alloc >
-	bool operator>=( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
-		typename ft::vector<T>::iterator lIt = lhs.begin(); 
-		typename ft::vector<T>::iterator rIt = rhs.begin();
-		for (; lIt != lhs.end(); lIt++, rIt++){
-			if (*lIt < *rIt)
-				return false;
-		}
-		if (lhs.size() < rhs.size())
-			return false;
-		return true;
+	template <class T, class Alloc>
+	inline bool operator>(const vector<T, Alloc>& x, const vector<T, Alloc>& y) {
+		return (y < x);
 	}
 
-	template< class T, class Alloc >
-	void swap( ft::vector<T,Alloc>& lhs, ft::vector<T,Alloc>& rhs ) {
-		lhs.swap(rhs);
+	template <class T, class Alloc>
+	inline bool operator>=(const vector<T, Alloc>& x, const vector<T, Alloc>& y) {
+		return (!(x < y));
+	}
+
+	template <class T, class Alloc>
+	void swap(vector<T, Alloc>& x, vector<T, Alloc>& y) {
+		x.swap(y);
 	}
 }
 

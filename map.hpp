@@ -6,6 +6,7 @@
 #include "bidirectional_iterator.hpp"
 #include "type_traits.hpp"
 #include "reverse_iterator.hpp"
+#include "algorithm.hpp"
 
 namespace ft {
 	template <class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key, T> > >
@@ -27,23 +28,30 @@ namespace ft {
 			typedef ptrdiff_t difference_type;
 			typedef size_t size_type;
 
-			class value_compare {
+			class value_compare : public std::binary_function<value_type, value_type, bool> {
+				friend class map<Key, T, Compare, Alloc>;
+
 				protected:
 					Compare comp;
-					value_compare( Compare c ){ this->comp = c; };
+					explicit value_compare(Compare c) : comp(c) {}
+
 				public:
-					typedef bool result_type;
-					typedef T first_argument_type;
-					typedef T second_argument_type;
-					
-					bool operator()( const value_type& lhs, const value_type& rhs ) const {
-						return comp(lhs.first, rhs.first);
-					};
+					bool operator()(const value_type& x, const value_type& y) const {
+						return (comp(x.first, y.first));
+					}
 			};
 
 			explicit map(const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _rb_tree(comp, alloc) { }
 
-			~map(void) { }
+			map(const map &x) : _rb_tree(x._rb_tree) {}
+
+			template <class InputIterator>
+			map	(InputIterator first, InputIterator last, const key_compare& comp = key_compare(),
+      		const allocator_type& alloc = allocator_type()) : _rb_tree(comp, alloc) {
+				insert(first, last);
+			}
+
+			~map(void) { clear(); }
 
 			iterator begin(void) { return (iterator(_rb_tree.leftMost(_rb_tree.getRoot()))); }
 
@@ -169,6 +177,10 @@ namespace ft {
 				return ft::make_pair(this->lower_bound(k), this->upper_bound(k));
 			}
 
+			void swap(map &x) {
+				_rb_tree.swap(x._rb_tree);
+			}
+
 			mapped_type &operator[](const key_type &k) {
 				iterator x = insert(begin(), ft::make_pair(k, mapped_type()));
 				return (x->second);
@@ -184,6 +196,48 @@ namespace ft {
 		private:
 			RB_Tree<Key, T> _rb_tree;
 	};
+
+	template< class Key, class T, class Compare, class Alloc >
+	void swap(map<Key, T, Compare, Alloc>& lhs,
+			map<Key, T, Compare, Alloc>& rhs) {
+		lhs.swap(rhs);
+	}
+
+	template <class Key, class T, class Compare, class Alloc>
+	bool operator==(const map<Key, T, Compare, Alloc>& lhs,
+					const map<Key, T, Compare, Alloc>& rhs) {
+		return (lhs._rb_tree == rhs._rb_tree);
+	}
+
+	template <class Key, class T, class Compare, class Alloc>
+	bool operator!=(const map<Key, T, Compare, Alloc>& lhs,
+					const map<Key, T, Compare, Alloc>& rhs) {
+		return (!(lhs == rhs));
+	}
+
+	template <class Key, class T, class Compare, class Alloc>
+	bool operator<(const map<Key, T, Compare, Alloc>& lhs,
+				const map<Key, T, Compare, Alloc>& rhs) {
+		return (lhs._rb_tree < rhs._rb_tree);
+	}
+
+	template <class Key, class T, class Compare, class Alloc>
+	bool operator<=(const map<Key, T, Compare, Alloc>& lhs,
+					const map<Key, T, Compare, Alloc>& rhs) {
+		return (!(rhs < lhs));
+	}
+
+	template <class Key, class T, class Compare, class Alloc>
+	bool operator>(const map<Key, T, Compare, Alloc>& lhs,
+				const map<Key, T, Compare, Alloc>& rhs) {
+		return (rhs < lhs);
+	}
+
+	template <class Key, class T, class Compare, class Alloc>
+	bool operator>=(const map<Key, T, Compare, Alloc>& lhs,
+					const map<Key, T, Compare, Alloc>& rhs) {
+		return (!(lhs < rhs));
+	}
 }
 
 #endif

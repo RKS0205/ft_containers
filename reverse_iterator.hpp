@@ -23,8 +23,9 @@ namespace ft {
 			reverse_iterator(const reverse_iterator<Iterator> &x) : current(x.base()) {}
 			~reverse_iterator(void) {}
 
-			const iterator_type base(void) const {
-				return (current);
+			iterator_type base(void) const {
+				iterator_type copy = current;
+				return (copy);
 			}
 
 			reference operator*() const {
@@ -33,8 +34,8 @@ namespace ft {
 				return (*temp);
 			}
 
-			pointer operator->() {
-				return &(this->operator*());
+			pointer operator->() const {
+				return &(operator*());
 			}
 
 			reverse_iterator& operator++() {

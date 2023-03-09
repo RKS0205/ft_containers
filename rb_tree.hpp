@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "utility.hpp"
+#include "algorithm.hpp"
 
 #define BLACK 0
 #define RED 1
@@ -97,6 +98,7 @@ namespace ft
 			~RB_Tree() {
 				if (_size > 0)
 					deallocator(_root);
+				freeNode(_NIL);
 			}
 
 			void deallocator(Node<Key, T> *node) { 
@@ -418,6 +420,26 @@ namespace ft
 				return (y);
 			}
 
+			void swap(RB_Tree &x) {
+				Allocator tmp_alloc = x._alloc;
+				size_t tmp_size = x._size;
+				Node<Key, T> *tmp_root = x._root;
+				Node<Key, T> *tmp_NIL = x._NIL;
+				Compare tmp_comp = x._comp;
+
+				x._alloc = _alloc;
+				x._root = _root;
+				x._NIL = _NIL;
+				x._size = _size;
+				x._comp = _comp;
+
+				_alloc = tmp_alloc;
+				_root = tmp_root;
+				_NIL = tmp_NIL;
+				_size = tmp_size;
+				_comp = tmp_comp;
+			}
+
 			void printBT(const std::string& prefix, const Node<Key, T> *node, bool isLeft)
 			{
 				if( node != _NIL )
@@ -470,6 +492,46 @@ namespace ft
 			Compare _comp;
 
 	};
+
+	#define RB_TREE_TEMPLATE typename Key,        \
+							typename Val,        \
+							typename Compare,    \
+							typename Alloc
+
+	#define RB_TREE_CLASS RB_Tree<Key, Val, Compare, Alloc>
+
+	template <RB_TREE_TEMPLATE>
+	inline bool operator==(const RB_TREE_CLASS &x, const RB_TREE_CLASS& y) {
+		return (x.size() == y.size() &&
+				ft::equal(x.begin(), x.end(), y.begin()));
+	}
+
+	template <RB_TREE_TEMPLATE>
+	inline bool operator!=(const RB_TREE_CLASS& x, const RB_TREE_CLASS& y) {
+		return (!(x == y));
+	}
+
+	template <RB_TREE_TEMPLATE>
+	inline bool operator<(const RB_TREE_CLASS& x, const RB_TREE_CLASS& y) {
+		return (ft::lexicographical_compare(x.begin(), x.end(),
+											y.begin(), y.end()));
+	}
+
+	template <RB_TREE_TEMPLATE>
+	inline bool operator<=(const RB_TREE_CLASS& x, const RB_TREE_CLASS& y) {
+		return (!(y < x));
+	}
+
+	template <RB_TREE_TEMPLATE>
+	inline bool operator>(const RB_TREE_CLASS& x, const RB_TREE_CLASS& y) {
+		return (y < x);
+	}
+
+	template <RB_TREE_TEMPLATE>
+	inline bool operator>=(const RB_TREE_CLASS& x, const RB_TREE_CLASS& y) {
+		return (!(x < y));
+	}
+
 }
 
 #endif

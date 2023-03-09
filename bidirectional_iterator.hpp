@@ -10,12 +10,11 @@ namespace ft {
 	template <typename Key, typename T>
 	class bidirectional_iterator {
 		public:
-			typedef ft::pair<const Key, T> iterator_type;
-			typedef typename iterator_traits<T*>::iterator_category	iterator_category;
-			typedef typename iterator_traits<T*>::value_type value_type;
-			typedef typename iterator_traits<T*>::difference_type difference_type;
-			typedef typename iterator_traits<T*>::pointer pointer;
-			typedef typename iterator_traits<T*>::reference reference;
+			typedef std::bidirectional_iterator_tag	iterator_category;
+			typedef  std::ptrdiff_t					difference_type;
+			typedef  ft::pair<const Key, T>			value_type;
+			typedef  value_type*					pointer;
+			typedef  value_type& 					reference;
 
 			bidirectional_iterator() : node(NULL) {}
 			explicit bidirectional_iterator(Node<Key, T> *node) : node(node) {}
@@ -33,11 +32,11 @@ namespace ft {
 				return (node);
 			}
 
-			ft::pair<const Key, T> operator*(void) const {
+			reference operator*(void) const {
 				return *(node->value);
 			}
 
-			ft::pair<const Key, T> *operator->(void) const {
+			pointer operator->(void) const {
 				return (node->value);
 			}
 
